@@ -29,8 +29,18 @@
  */
 
 #include "defs.h"
+#ifdef __BIONIC__
+# define dirent bionic_dirent
+#endif
 #include <dirent.h>
-#include <sys/swap.h>
+#ifdef __BIONIC__
+# undef dirent
+# include <linux/dirent.h>
+# include <linux/swap.h>
+# include <linux/fadvise.h>
+#else
+# include <sys/swap.h>
+#endif
 
 #if defined(SPARC) || defined(SPARC64)
 struct stat {
@@ -632,7 +642,7 @@ sys_truncate(struct tcb *tcp)
 	return 0;
 }
 
-#if _LFS64_LARGEFILE
+#if _LFS64_LARGEFILE || defined __BIONIC__
 int
 sys_truncate64(struct tcb *tcp)
 {
@@ -654,7 +664,7 @@ sys_ftruncate(struct tcb *tcp)
 	return 0;
 }
 
-#if _LFS64_LARGEFILE
+#if _LFS64_LARGEFILE || defined __BIONIC__
 int
 sys_ftruncate64(struct tcb *tcp)
 {
@@ -1719,7 +1729,10 @@ sys_fstatfs(struct tcb *tcp)
 	return 0;
 }
 
-#if defined HAVE_STATFS64
+#if defined HAVE_STATFS64 || defined __BIONIC__
+# ifdef __BIONIC__
+#  define statfs64 statfs
+# endif
 static void
 printstatfs64(struct tcb *tcp, long addr)
 {
@@ -1761,7 +1774,11 @@ struct compat_statfs64 {
 	uint64_t f_bavail;
 	uint64_t f_files;
 	uint64_t f_ffree;
+#ifdef __BIONIC__
+	__kernel_fsid_t f_fsid;
+#else
 	fsid_t f_fsid;
+#endif
 	uint32_t f_namelen;
 	uint32_t f_frsize;
 	uint32_t f_flags;
@@ -1833,6 +1850,11 @@ sys_fstatfs64(struct tcb *tcp)
 	}
 	return 0;
 }
+
+# ifdef __BIONIC__
+#  undef statfs64
+# endif
+
 #endif
 
 #if defined(ALPHA)
@@ -2322,7 +2344,7 @@ sys_getdents(struct tcb *tcp)
 	return 0;
 }
 
-#if _LFS64_LARGEFILE
+#if _LFS64_LARGEFILE || defined __BIONIC__
 int
 sys_getdents64(struct tcb *tcp)
 {

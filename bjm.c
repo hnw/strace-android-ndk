@@ -34,7 +34,9 @@
 #include <sys/wait.h>
 #include <sys/resource.h>
 #include <sys/utsname.h>
-#include <sys/user.h>
+#ifndef __BIONIC__
+# include <sys/user.h>
+#endif
 
 /* Bits of module.flags.  */
 

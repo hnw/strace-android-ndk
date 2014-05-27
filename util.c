@@ -32,7 +32,9 @@
  */
 
 #include "defs.h"
-#include <sys/user.h>
+#ifndef __BIONIC__
+# include <sys/user.h>
+#endif
 #include <sys/param.h>
 #include <fcntl.h>
 #if HAVE_SYS_UIO_H
@@ -1409,6 +1411,10 @@ change_syscall(struct tcb *tcp, arg_setup_state *state, int new)
 #endif /* architecture */
 	return -1;
 }
+
+#ifdef __BIONIC__
+# define SYS_clone __NR_clone
+#endif
 
 int
 setbpt(struct tcb *tcp)

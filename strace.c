@@ -457,6 +457,10 @@ swap_uid(void)
 # define set_rlimit setrlimit
 #endif
 
+#ifdef __BIONIC__
+# define d_fileno d_ino
+#endif
+
 static FILE *
 strace_fopen(const char *path)
 {
@@ -535,6 +539,10 @@ tprintf(const char *fmt, ...)
 	}
 	va_end(args);
 }
+
+#ifdef __BIONIC__
+# define fputs_unlocked fputs
+#endif
 
 void
 tprints(const char *str)

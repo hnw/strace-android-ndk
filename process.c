@@ -40,7 +40,11 @@
 #include <sys/wait.h>
 #include <sys/resource.h>
 #include <sys/utsname.h>
-#include <sys/user.h>
+#ifdef __BIONIC__
+# include <linux/user.h>
+#else
+# include <sys/user.h>
+#endif
 #ifdef HAVE_ELF_H
 # include <elf.h>
 #endif
@@ -66,6 +70,13 @@
 # include <linux/ptrace.h>
 # undef ia64_fpreg
 # undef pt_all_user_regs
+#endif
+
+#ifdef __BIONIC__
+# ifndef PTRACE_SYSCALL
+#  define PTRACE_SYSCALL 24
+# endif
+# define __sched_priority sched_priority
 #endif
 
 #if defined(SPARC64)

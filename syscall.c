@@ -32,7 +32,9 @@
  */
 
 #include "defs.h"
-#include <sys/user.h>
+#ifndef __BIONIC__
+# include <sys/user.h>
+#endif
 #include <sys/param.h>
 
 #ifdef HAVE_SYS_REG_H

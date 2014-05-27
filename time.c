@@ -29,7 +29,11 @@
 
 #include "defs.h"
 #include <linux/version.h>
-#include <sys/timex.h>
+#ifdef __BIONIC__
+# include <linux/timex.h>
+#else
+# include <sys/timex.h>
+#endif
 #include <linux/ioctl.h>
 #include <linux/rtc.h>
 

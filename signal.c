@@ -32,7 +32,9 @@
  */
 
 #include "defs.h"
-#include <sys/user.h>
+#ifndef __BIONIC__
+# include <sys/user.h>
+#endif
 #include <fcntl.h>
 
 #ifdef HAVE_SYS_REG_H
@@ -815,7 +817,11 @@ sys_sigreturn(struct tcb *tcp)
 {
 #if defined(ARM)
 	if (entering(tcp)) {
+#ifdef __BIONIC__
+		struct sigcontext sc;
+#else
 		struct sigcontext_struct sc;
+#endif
 		sigset_t sigm;
 		if (umove(tcp, arm_regs.ARM_sp, &sc) < 0)
 			return 0;

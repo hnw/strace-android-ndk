@@ -27,6 +27,9 @@
  */
 
 #include "defs.h"
+
+#ifndef __BIONIC__
+
 #include <sys/ioctl.h>
 #include <scsi/sg.h>
 
@@ -137,3 +140,5 @@ scsi_ioctl(struct tcb *tcp, long code, long arg)
 	}
 	return 1;
 }
+
+#endif /* __BIONIC__ */

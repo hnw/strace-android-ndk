@@ -16,6 +16,10 @@
 #include <stdarg.h>
 #include <limits.h>
 
+#ifdef __BIONIC__
+# define fputs_unlocked fputs
+#endif
+
 #define noinline_for_stack /*nothing*/
 #define likely(expr)       (expr)
 #define unlikely(expr)     (expr)

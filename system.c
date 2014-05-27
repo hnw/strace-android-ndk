@@ -64,8 +64,11 @@
 #define MS_MGC_MSK	0xffff0000	/* Magic flag mask */
 
 #include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
+#if __BIONIC__
+#else
+# include <netinet/in.h>
+# include <arpa/inet.h>
+#endif
 #ifdef HAVE_LINUX_CAPABILITY_H
 # include <linux/capability.h>
 #endif
